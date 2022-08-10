@@ -21,6 +21,7 @@ dependencies {
 	testImplementation 'io.cucumber:cucumber-junit:6.8.0'
 	testImplementation 'io.cucumber:cucumber-spring:6.8.0'
 	testImplementation 'org.junit.vintage:junit-vintage-engine:5.7.2'
+	implementation 'org.projectlombok:lombok'
 }
 configurations {
 	cucumberRuntime {
