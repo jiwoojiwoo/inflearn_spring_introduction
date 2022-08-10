@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MyStepdefs {
     MemberService memberService;
     MemoryMemberRepository memberRepository;
-    IllegalStateException e;
+    String exceptionMessage;
 
     @Before
     public void beforeEach() {
@@ -31,23 +31,33 @@ public class MyStepdefs {
     }
 
 
-    @Given("회원 한 명이 등록된 상태이다 {string}")
-    public void 회원한명이등록된상태이다(String name) {
+    @When("회원 가입한다. {string}")
+    public void 회원가입한다(String name) {
+        exceptionMessage = null;
         Member member = new Member();
         member.setName(name);
-        memberService.join(member);
+        try {
+            memberService.join(member);
+        }catch (IllegalStateException ie){
+            exceptionMessage = ie.getMessage();
+        }
     }
 
-    @When("jiwoo를 등록한다 {string}")
-    public void jiwoo를등록한다(String name) {
-        Member member = new Member();
-        member.setName(name);
-        e = assertThrows(IllegalStateException.class, () -> memberService.join(member));
+    @Then("회원이 존재한다. {string}")
+    public void 회원이존재한다(String name) {
+        Member result = memberService.findOneByName(name).get();
+        assertThat(result.getName()).isEqualTo(name);
     }
 
-    @Then("예외처리 된다 {string}")
-    public void 예외처리된다(String message) {
-        assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
+    @Then("예외가 발생한다. {string}")
+    public void 예외가발생한다(String message) {
+        assertThat(exceptionMessage).isEqualTo("이미 존재하는 회원입니다.");
     }
 
+//    @Given("회원이 가입되어 있다. {string}")
+//    public void 회원이가입되어있다(String name) {
+//        Member member = new Member();
+//        member.setName(name);
+//        memberService.join(member);
+//    }
 }
